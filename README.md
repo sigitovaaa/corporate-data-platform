@@ -58,3 +58,25 @@ docker compose logs
 ```
 docker compose down
 ```
+## Kubernetes
+Приложение может быть развернуто в локальном Kubernetes-кластере Docker Desktop.
+Манифесты находятся в каталоге
+```
+kubernetes/
+```
+Основной Deployment:
+```
+corporate-data-deployment
+```
+PostgreSQL запускается отдельно через Docker Compose:
+```
+docker compose up -d db
+```
+Запуск Kubernetes-конфигурации:
+```
+kubectl apply -f kubernetes/deployment.yaml
+```
+Проверка:
+```
+kubectl get pods
+```
