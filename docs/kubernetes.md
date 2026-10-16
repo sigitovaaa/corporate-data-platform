@@ -58,3 +58,6 @@ kubectl scale deployment corporate-data-deployment --replicas=3
 ```
 kubectl logs ИМЯ_POD
 ```
+## CI/CD
+Для проекта используется автоматическая сборка Docker-образа с помощью GitHub
+Actions.
