@@ -8,7 +8,6 @@ DB_USER = os.getenv("DB_USER", "corporate_user")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "corporate_password")
 DB_PORT = os.getenv("DB_PORT", "5432")
 
-
 def get_companies():
     with psycopg.connect(
         host=DB_HOST,
@@ -25,7 +24,6 @@ def get_companies():
             """)
             return cursor.fetchall()
 
-
 class PlatformHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
@@ -33,14 +31,15 @@ class PlatformHandler(BaseHTTPRequestHandler):
             rows = ""
             for company in companies:
                 rows += f"""
-                    <tr>
-                        <td>{company[0]}</td>
-                        <td>{company[1]}</td>
-                        <td>{company[2]}</td>
-                        <td>{company[3]}</td>
-                        <td>{company[4]}</td>
-                    </tr>
+                <tr>
+                    <td>{company[0]}</td>
+                    <td>{company[1]}</td>
+                    <td>{company[2]}</td>
+                    <td>{company[3]}</td>
+                    <td>{company[4]}</td>
+                </tr>
                 """
+
             html = f"""
             <!DOCTYPE html>
             <html lang="ru">
@@ -58,6 +57,7 @@ class PlatformHandler(BaseHTTPRequestHandler):
                     th {{background: #eeeeee;}}
                 </style>
             </head>
+
             <body>
                 <h1>Corporate Data Platform</h1>
                 <h2>Корпоративная платформа обработки данных</h2>
@@ -79,21 +79,23 @@ class PlatformHandler(BaseHTTPRequestHandler):
             </body>
             </html>
             """
+
             self.send_response(200)
             self.send_header("Content-type", "text/html; charset=utf-8")
             self.end_headers()
             self.wfile.write(html.encode("utf-8"))
+
         except Exception as error:
             html = f"""
             <h1>Corporate Data Platform</h1>
             <h2>Ошибка подключения к базе данных</h2>
             <p>{error}</p>
             """
+
             self.send_response(500)
             self.send_header("Content-type", "text/html; charset=utf-8")
             self.end_headers()
             self.wfile.write(html.encode("utf-8"))
-
 
 server = HTTPServer(("0.0.0.0", 8000), PlatformHandler)
 

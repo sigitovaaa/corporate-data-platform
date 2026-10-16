@@ -1,15 +1,18 @@
 services:
   db:
     image: postgres:18
+    platform: linux/amd64
     ports:
-    - "5432:5432"
+      - "5432:5432"
     environment:
       POSTGRES_DB: corporate
       POSTGRES_USER: corporate_user
       POSTGRES_PASSWORD: corporate_password
+
     volumes:
       - postgres_data:/var/lib/postgresql
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
     healthcheck:
       test:
         [
@@ -19,6 +22,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
   app:
     build:
       context: ./app
@@ -33,5 +37,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
 volumes:
   postgres_data:
