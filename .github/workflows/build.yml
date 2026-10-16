@@ -1,5 +1,4 @@
 name: Corporate Data Platform CI
-
 on:
   push:
     branches:
