@@ -41,5 +41,5 @@ jobs:
           context: ./app
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           tags: |
-            ghcr.io/${{ github.repository_owner }}/corporate-data-platform:latest
-            ghcr.io/${{ github.repository_owner }}/corporate-data-platform:${{ github.sha }}
+           ghcr.io/sigitovaaa/corporate-data-platform:latest
+           ghcr.io/sigitovaaa/corporate-data-platform:${{ github.sha }}
