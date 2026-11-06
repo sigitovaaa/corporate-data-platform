@@ -8,11 +8,9 @@ services:
       POSTGRES_DB: corporate
       POSTGRES_USER: corporate_user
       POSTGRES_PASSWORD: corporate_password
-
     volumes:
       - postgres_data:/var/lib/postgresql
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
-
     healthcheck:
       test:
         [
@@ -43,6 +41,7 @@ services:
     container_name: corporate-airflow
     depends_on:
       - db
+      - rustfs
     environment:
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"
       AIRFLOW__CORE__DAGS_FOLDER: "/opt/airflow/dags"
@@ -52,6 +51,10 @@ services:
       DB_NAME: "corporate"
       DB_USER: "corporate_user"
       DB_PASSWORD: "corporate_password"
+      RUSTFS_ENDPOINT: "http://rustfs:9000"
+      RUSTFS_ACCESS_KEY: "rustfsadmin"
+      RUSTFS_SECRET_KEY: "rustfssecret123"
+      RUSTFS_PROCESSED_BUCKET: "corporate-processed"
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/logs:/opt/airflow/logs
@@ -60,9 +63,26 @@ services:
       - "8081:8080"
     command: >
       bash -c "
-      pip install --no-cache-dir 'psycopg[binary]' &&
+      pip install --no-cache-dir 'psycopg[binary]' boto3 &&
       airflow standalone
       "
 
+  rustfs:
+    image: rustfs/rustfs:latest
+    container_name: corporate-rustfs
+    environment:
+      RUSTFS_ACCESS_KEY: rustfsadmin
+      RUSTFS_SECRET_KEY: rustfssecret123
+      RUSTFS_ADDRESS: "0.0.0.0:9000"
+      RUSTFS_CONSOLE_ADDRESS: "0.0.0.0:9001"
+      RUSTFS_CONSOLE_ENABLE: "true"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - rustfs_data:/data
+    command: /data
+
 volumes:
   postgres_data:
+  rustfs_data:
